@@ -1,0 +1,61 @@
+module rv32i_top(
+	input clk,
+	input rst_n
+);
+
+	logic [31:0] instr_code;
+	logic [31:0] instr_addr;
+    logic [31:0] daddr;
+    logic [31:0] dwdata;
+	logic [31:0] drdata;
+	logic		 dwe;
+	logic [ 2:0] itype;
+
+	rv32i_cpu U_RV32I_CPU(
+		.*
+	);
+
+	instruction_rom U_INSTR_ROM(
+		.*
+	);
+
+	datamem U_DATA_MEM(
+		.*
+	);
+
+endmodule
+
+
+
+module rv32i_cpu(
+	input  logic		clk,
+	input  logic		rst_n,
+	input  logic [31:0] instr_code,
+	input  logic [31:0] drdata,
+	output logic [31:0] instr_addr,
+    output logic [31:0] daddr,
+    output logic [31:0] dwdata,
+	output logic		dwe,
+	output logic [ 2:0] itype
+);
+
+	logic pc_en;
+	logic rf_we;
+	logic branch;
+	logic jal;
+	logic jalr;
+	logic jump;
+    logic alusrc_sel;
+	logic [3:0] alu_control;
+	logic rfsrc_sel;
+	logic [1:0] j_u_sel;
+
+	control_unit U_CONTROL_UNIT(
+		.*
+	);
+
+	datapath U_DATAPATH(
+		.*
+	);
+
+endmodule
