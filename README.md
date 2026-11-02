@@ -7,6 +7,8 @@ C 코드를 RV32I 기계어로 바꿔 실제로 실행하고, 그 결과가 APB 
 > 4인 팀 프로젝트 (2026.09)
 > **담당: CPU SW 검증, APB Completer(BRAM, GPI, GPO) 설계**
 
+## System Overview
+
 ![Block Diagram](docs/images/block_diagram.png)
 
 ## 왜 멀티사이클인가
