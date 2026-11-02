@@ -11,6 +11,21 @@ C 코드를 RV32I 기계어로 바꿔 실제로 실행하고, 그 결과가 APB 
 
 ![Block Diagram](docs/images/block_diagram.png)
 
+### System Flow
+
+위 블록 다이어그램의 왼쪽에서 오른쪽으로, 명령어 하나가 이렇게 처리됩니다.
+
+1. **Instruction ROM (명령어 저장 메모리)**
+   PC가 가리키는 주소의 명령어(`instr_code`)를 꺼냅니다. 명령어 메모리와 데이터 버스가 분리된 하버드 구조라서, 명령어 인출과 메모리·주변장치 접근이 서로 막지 않습니다.
+2. **Control Unit (명령어 해석)**
+   opcode를 해석하고 `FETCH → DECODE → EXECUTE → MEM → WB` FSM을 돌면서 단계마다 `pc_en`, `rf_we`, `alusrc_sel`, `alu_control`, `bus_we` 같은 제어 신호를 만듭니다. Load/Store가 아닌 명령어는 MEM 단계를 건너뜁니다.
+3. **Datapath (실행 연산 장치)**
+   레지스터 파일 읽기, 즉치값 생성, ALU 연산, 분기 판정, PC 갱신을 하고, 결과를 WB 단계에서 레지스터 파일에 씁니다.
+4. **APB Requester (버스 프로토콜 변환)**
+   Load/Store일 때 CPU의 `bus_addr`, `bus_wdata`, `transfer`, `bus_we`를 받아 `IDLE → SETUP → ACCESS` 순서의 APB 전송으로 바꿉니다. 주소 상위 4비트로 RAM과 주변장치를 구분하고, `PSEL0~6` 중 하나를 선택합니다.
+5. **APB Completer (메모리 & 주변장치)**
+   선택된 BRAM·GPI·GPO가 `PREADY`/`PRDATA`로 응답하면, Mux가 그 값만 CPU로 돌려줍니다. CPU는 `ready`를 받은 뒤 다음 단계로 넘어갑니다.
+
 ## 왜 멀티사이클인가
 
 싱글사이클 CPU는 가장 긴 명령어(Load)의 지연을 기준으로 클럭 주기가 정해지기 때문에, 짧은 명령어일수록 시간이 낭비됩니다.
