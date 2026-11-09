@@ -186,7 +186,7 @@ CPU는 C 같은 고수준 문법을 직접 이해하지 못하므로, C 코드�
 ## 디렉터리 구조
 
 ```
-rv32i-cpu-project
+RV32I_CPU_Project
 ├── rtl/                     # 최종 설계 (멀티사이클 CPU + APB)
 │   ├── rv32i_top.sv         # Top: ROM + CPU + APB Requester + BRAM
 │   ├── control_unit.sv      # 멀티사이클 FSM, 제어 신호 생성
